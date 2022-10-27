@@ -1,0 +1,6 @@
+[book]
+authors = ["silence_zhpf"]
+language = "en"
+multilingual = false
+src = "src"
+title = "rust笔记"

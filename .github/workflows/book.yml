@@ -1,0 +1,40 @@
+name: Deploy
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions-rs/toolchains@v1
+        with:
+          toolchains: nightly
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+      - name: Install mdbook
+        run: |
+          which mdbook || cargo install mdbook
+      - name: Deploy GitHub Pages
+        run: |
+          mdbook build
+          git worktree add ../gh-pages gh-pages
+          git config user.name "Deploy user"
+          git config user.email ""
+          cd ../gh-pages
+          git update-ref -d refs/heads/gh-pages
+          rm * -rf
+          mv ../git/book* .
+          git add .
+          git commit -m "Deploy the rust book to gh-pages"
+          git push --force --set-upstream origin gh-pages

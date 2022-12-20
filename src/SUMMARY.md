@@ -4,6 +4,7 @@
 
 - [标准库](./std/ReadMe.md)
   - [format!](./std/format.md)
+  - [vec](./std/vec.md)
 
 - [函数](./fn/ReadMe.md)
 

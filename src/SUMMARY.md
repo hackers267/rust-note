@@ -2,6 +2,10 @@
 
 # 基础知识
 
+- [基本知识](./common/ReadMe.md)
+  - [变量](./common/base.md)
+  - [字符串](./common/str.md)
+
 - [标准库](./std/ReadMe.md)
   - [format!](./std/format.md)
   - [vec](./std/vec.md)

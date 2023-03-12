@@ -24,6 +24,7 @@
 ## Dotenvy
 - [dotenvy](./dotenvy/ReadMe.md)
 - [serde](./serde/ReadMe.md)
+- [rayon](./rayon/ReadMe.md)
 -------
 # 常见问题
 

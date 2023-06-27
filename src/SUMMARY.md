@@ -28,6 +28,7 @@
 - [rayon](./rayon/ReadMe.md)
 - [itertools](./itertools/ReadMe.md)
 - [chrono](./chrono/ReadMe.md)
+  - [使用示例](./chrono/example.md)
   - [格式化](./chrono/format.md)
 - [date_utils](./date_utils/ReadMe.md)
 - [Reqwest](./reqwest/ReadMe.md)

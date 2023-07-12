@@ -15,12 +15,12 @@
 
 在 Rust 中使用`Option`的时候，Rust 可以保证使用`Option<T>`和使用`T`在下面的情况下的类型大小是一样的：
 
-- Box\<U>
+- Box&lt;U>
 - &U
 - &mut U
 - fn, extern "C" fn
 - num::NoneZero\*
-- ptr::NonNull\<U>
+- ptr::NonNull&lt;U>
 - #\[repr(transparent)\] struct around one of the types in this list
 
 ## 方法概览
@@ -29,15 +29,172 @@
 
 - is_some 判断`Option`是不是一个`Some`值
 - is_none 判断`Option`是不是一个`None`值
+- is_some_and 判断`Option`是不是一个`Some`值并且符合给定的断言
+
+#### is_some
+
+`is_some`方法用于判断`Option`是不是一个`Some`值，是`Some`值，返回`true`，不是`Some`值，返回`false`;
+
+签名如下：
+
+```rust
+fn is_some(&self) -> bool
+```
+
+代码示例：
+
+```rust
+let x: Option<u32> = Some(2);
+assert_eq!(x.is_some(), true);
+
+let x: Option<u32> = None;
+assert_eq!(x.is_some(), false);
+```
+
+#### is_none
+
+`is_none`方法用于判断`Option`是不是一个`None`值，是`None`返回`true`，否则返回`false`;
+
+签名如下：
+
+```rust
+fn is_none(&self) -> bool
+```
+
+代码示例：
+
+```rust!
+let x:Option<u32> = Some(2);
+assert_eq!(x.is_none(), false);
+
+let x:Option<u32> = None;
+assert_eq!(x.is_none(), true);
+```
+
+#### is_some_and
+
+`is_some_and`方法在同时满足以下两个条件时返回`true`：
+
+- `Option`是一个`Some`值
+- `Some`的内容值满足给定的断言函数。
+
+否则返回`false`。
+
+签名如下：
+
+```rust
+fn is_some_and(self, f: F) -> bool
+  where F: FnOnce(T) -> bool
+```
+
+代码示例：
+
+```rust
+fn more_than_one(n: u32) -> bool {
+    n > 1
+}
+
+let x: Option<u32> = Some(2);
+assert_eq!(x.is_some_and(more_than_one), true);
+
+let x: Option<u32> = Some(0);
+assert_eq!(x.is_some_and(more_than_one), false);
+
+let x: Option<u32> = None;
+assert_eq!(x.is_some_and(more_than_one), false);
+```
 
 ### 转换
 
-- as_ref 把 *&Option<T>*转换为*Option\<&T>*
-- as*mut 把 *&mut Option<T>\_ 转换为*Option\<&mut T>*
-- as*deref 把 *&Option<T>\_ 转换为*Option\<&T::Target>*
-- as*deref_mut 把 *&mut Option<T>\_ 转换为*Option\<&mut T::Target>*
-- as*pin_ref 把 \_Pin\<&Option<T>>* 转换为*Option\<Pin\<&T>>*
-- as*pin_mut 把 \_Pin\<&mut Option<T>>* 转换为*Option\<Pin\<&mut T>>*
+- as_ref 把 *&Option<T>* 转换为 *Option<&T>*
+- as_mut 把 *&mut Option<T>* 转换为*Option<&mut T>*
+- as_deref 把 *&Option<T>* 转换为*Option<&T::Target>*
+- as_deref_mut 把 *&mut Option<T>* 转换为*Option<&mut T::Target>*
+- as_pin_ref 把 *Pin<&Option<T>>* 转换为*Option<Pin<&T>>*
+- as_pin_mut 把 *Pin<&mut Option<T>>* 转换为*Option<Pin<&mut T>>*
+
+#### as_ref
+
+`as_ref`方法转换`&Option<T>`为`Option<&T>`，其主要的作用是可以把通过这个转换保留`T`的所有权，方便在之后使用。
+
+签名如下：
+
+```rust
+fn as_ref(&self) -> Option<&T>
+```
+
+示例代码：
+
+```rust
+let text:Option<String> = Some("Hello, rust!".to_string());
+let text_lenghth: Option<uszie> = text.as_ref().map(|s| s.len());
+println!("still can print text: {text:?}");
+```
+
+#### as_mut
+
+`as_mut`把`&mut Option<T>`转换为`Option<&mut T>`;
+
+签名如下：
+
+```rust
+fn as_mut(&mut self) -> Option<&mut T>
+```
+
+示例代码：
+
+```rust
+let mut x = Some(2);
+match x.as_mut() {
+    Some(v) => *v= 42,
+    None => {},
+}
+assert_eq!(x, Some(42));
+```
+
+#### as_deref
+
+`as_deref`转换`Option<T>`或`&Option<T>`为`Option<&T::Target>`;
+
+签名如下：
+
+```rust
+fn as_deref(&self) -> Option<&<T as Deref>::Target>
+  where
+    T: Deref
+```
+
+示例代码：
+
+```rust
+let x: Option<String> = Some("hey".to_owned());
+assert_eq!(x.as_deref(), Some("hey"));
+
+let x: Option<String> = None;
+assert_eq!(x.as_deref(), None);
+```
+
+#### as_deref_mut
+
+`as_deref_mut`转换`Option<T>`或`&mut Option<T>`为`Option<&mut T::Target>`;
+
+签名如下：
+
+```rust
+fn as_deref_mut(&mut self) -> Option<&<T as Deref>::Target>
+  where
+    T: DerefMut
+```
+
+示例代码：
+
+```rust
+let mut x: Option<String> = Some("hey".to_owned());
+assert_eq!(x.as_deref_mut().map(|x| {
+    x.make_ascii_uppercase();
+    x
+  }), Some("HEY".to_owned().as_mut_str());
+```
 
 ### 提取值
 
@@ -197,4 +354,180 @@ let z = None:<u8>;
 
 assert_eq!(x.zip(y), Some((1, "foo")));
 assert_eq!(x.zip(z), None);
+```
+
+### 布尔操作
+
+在`Option`中有一类操作符被称之为布尔操作符，这些操作符把`Some`视为`true`，把`None`视为`false`。而这类操作符根据接收的参数，又可以分为 2 类，一类直接接收一个`Option`作为参数，另一类接收一个返回值为`Option`的函数作为参数。
+
+接收`Option`作为参数的一类：
+
+| 方法 | self    | 输人      | 结果    |
+| ---- | ------- | --------- | ------- |
+| and  | None    | (ignored) | None    |
+| and  | Some(x) | None      | None    |
+| and  | Some(x) | Some(y)   | Some(y) |
+| or   | None    | None      | None    |
+| or   | None    | Some(x)   | Some(x) |
+| or   | Some(x) | (ignored) | Some(x) |
+| xor  | None    | None      | None    |
+| xor  | None    | Some(x)   | Some(x) |
+| xor  | Some(x) | None      | Some(x) |
+| xor  | Some(x) | Some(y)   | None    |
+
+#### and
+
+`and`方法作用于两个`Option`之间，当且仅当两个`Option`都为`Some`时，返回连接的`Some`，否则返回`None`。其应用场景是：
+
+- 当两个`Option`都为`Some`时，需要取其中一个`Some`的值。
+
+签名如下：
+
+```rust
+fn and<U>(self, optb: Option<U>) -> Option<U>
+```
+
+示例代码：
+
+```rust
+let x = Some(2);
+let y: Option<&str> = None;
+assert_eq!(x.and(y), None);
+
+let x: Option<u32> = None;
+let y = Some("foo");
+assert_eq!(x.and(y), None);
+
+let x = Some(2);
+let y = Some("foo");
+assert_eq!(x.and(y), Some("foo"));
+
+let x: Option<u32> = None;
+let y: Option<&str> = None;
+assert_eq!(x.and(y), None);
+```
+
+#### or
+
+`or`方法作用于两个`Option`之间，当且仅当两个`Option`都为`None`时，返回`None`，否则返回首先出现的`Some`。其应用场景为：
+
+- 为某个可能为`None`的值提供一个默认值。
+
+签名如下：
+
+```rust
+fn or(self, optb: Option<T>) -> Option<T>
+```
+
+代码示例：
+
+```rust
+let x = Some(2);
+let y = None;
+assert_eq!(x.or(y), Some(2));
+
+let x = None;
+let y = Some(100);
+assert_eq!(x.or(y), Some(100));
+
+let x = Some(2);
+let y = Some(100);
+assert_eq!(x.or(y), Some(2));
+
+let x: Option<u32> = None;
+let y = None;
+assert_eq!(x.or(y), None);
+```
+
+#### xor
+
+`xor`方法同样作用下再个`Option`之间，当两个`Option`同时为`Some`或同时为`None`时，返回`None`。否则返回其中的一个`Some`。
+
+签名如下：
+
+```rust
+fn xor(self, optb: Option<T>) -> Option<T>
+```
+
+代码示例：
+
+```rust
+let x = Some(2);
+let y: Option<u32> = None;
+assert_eq!(x.xor(y), Some(2));
+
+let x: Option<u32> = None;
+let y = Some(2);
+assert_eq!(x.xor(y), Some(2));
+
+let x = Some(2);
+let y = Some(2);
+assert_eq!(x.xor(y), None);
+
+let x: Option<u32> = None;
+let y: Option<u32> = None;
+assert_eq!(x.xor(y), None);
+```
+
+接收函数的返回值为`Option`的一类：
+
+| 方法     | self    | 函数输入       | 函数输出        | 结果    |
+| -------- | ------- | -------------- | --------------- | ------- |
+| and_then | None    | (not provided) | (not evaluated) | None    |
+| and_then | Some(x) | x              | None            | None    |
+| and_then | Some(x) | x              | Some(y)         | Some(y) |
+| or_else  | None    | (not provided) | None            | None    |
+| or_else  | None    | (not provided) | Some(y)         | Some(y) |
+| or_else  | Some(x) | (not provided) | (not evaluated) | Some(x) |
+
+#### and_then
+
+`and_then`方法使用一个返回值为`Option`的函数作为参数，其特点是：
+
+- 如果`Option`是`None`，则返回`None`
+- 如果`Option`是`Some`，则返回函数的返回值。
+
+签名如下：
+
+```rust
+fn and_then(U, F)(self, f: F) -> Option<U>
+  where F: FnOnce(T) -> Option<U>,
+```
+
+代码示例：
+
+```rust
+fn sq_then_to_string(x: u32) -> Option<String> {
+    x.checked_mul(x).map(|sq| sq.to_string())
+}
+
+assert_eq!(Some(2).and_then(sq_then_to_string),Some(4.to_string()));
+assert_eq!(Some(1_000_1000).and_then(sq_then_to_string), None);
+assert_eq!(None.and_then(sq_then_to_string), None);
+```
+
+#### or_else
+
+`or_else`方法使用一个返回值为`Option`的函数作为参数，其特点是：
+
+- 如果`Option`是`Some`，直接返回`Some`
+- 如果`Option`是`None`，则返回函数的返回值。
+
+签名如下：
+
+```rust
+fn or_else(self, f: F) -> Option<T>
+  where
+    F: FnOnce() -> Option<T>
+```
+
+代码示例：
+
+```rust
+fn nobody() -> Option<&'static str> { None }
+fn tim() -> Option<&'static str> { Some("Tim") }
+
+assert_eq!(Some("Jane").or_else(tim), Some("Jane"));
+assert_eq!(None.or_else(tim), Some("Tim"));
+assert_eq!(None.or_else(nobody), None);
 ```

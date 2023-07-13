@@ -323,6 +323,70 @@ assert_eq!(y.unwrap_or_default(), 12);
 - ok_or_else 如果`Option`是`Some(v)`则转换为`Ok(v)`，如果`Option`是`None`，则使用提供的函数的返回值转换为`Err(err)`
 - transpose 把`Option<Result<T,E>>`转换为`Result<Option<T>,E>`
 
+#### ok_or
+
+`ok_or`提供了一个把`Option`转换为`Result`的方法：
+
+- 如果是`Some(v)`，则转换成`Ok(v)`
+- 如果是`None`，则转换成`Err(err)`
+
+签名如下：
+```rust
+let x = Some("foo");
+assert_eq!(x.ok_or(0), Ok("foo"));
+
+let x: Option<&str> = None;
+assert_eq!(x.ok_or(0), Err(0));
+```
+
+#### ok_or_else
+
+`ok_or_else`也是一种把`Option`转换为`Result`的方式，其提供了一个函数，这个函数可以在`Option`为`None`，把返回值作为`Err`的值：
+
+- 如果是`Some(v)`，则转换成`Ok(v)`
+- 如果是`None`，则把函数的返回值作为值，转换成`Err(err)`
+
+签名如下：
+```rust
+fn ok_or_else(self,f: F) -> Result<T, E>
+where
+  F: FnOnce() -> E
+```
+
+示例代码：
+```rust
+let x = Some("foo");
+assert_eq!(x.ok_or_else(|| 0), Ok("foo"));
+
+let y: Option<&str> = None;
+assert_eq!(x.ok_or_else(|| 0), Err(0));
+```
+
+#### transpose
+
+`transpose`的作用就是把`Option<Result<T,E>`转换成`Result<Option<T>,E>`的形式。
+
+- `None` -> `Ok(None)`
+- `Some(Ok(_))` -> `Ok(Some(_))`
+- `Some(Err(_))` -> `Err(_)`
+
+签名如下：
+```rust
+impl<T,E> Option<Result<T, E>> {
+    fn transpose(self) -> Result<Option<T>, E>
+}
+```
+
+示例代码：
+```rust
+#[derive(Debug, Eq, PartialEq)]
+struct SomeErr;
+
+let x: Result<Option<i32>, SomeErr> = Ok(Some(5));
+let y: Option<Result<i32, SomeErr>> = Some(Ok(5));
+assert_eq!(y.transpose(), x);
+```
+
 ### 其它转换
 
 - filter
@@ -771,4 +835,44 @@ let mut x: Option<u32> = None;
 let y = x.take();
 assert_eq!(y, None);
 assert_eq!(x, None);
+```
+
+#### iter
+
+`iter`返回一个内部值的迭代器。
+
+签名如下：
+```rust
+fn iter(&self) -> Iter<'_, T>
+```
+
+代码示例：
+```rust
+let x = Some(4);
+assert_eq!(x.iter().next(), Some(&4));
+
+let x: Option<u32> = None;
+assert_eq!(x.iter().next(), None);
+```
+
+#### iter_mut
+
+`iter`返回一个可变引用的迭代器。
+
+签名如下：
+```rust
+fn iter_mut(&mut self) -> IterMut<'_, T>
+```
+
+示例代码：
+```rust
+let mut x = Some(4);
+match x.iter_mut().next() {
+    Some() => *v = 42,
+    None() => {},
+}
+assert_eq!(x, Some(42));
+
+let mut x: Option<u32> = None();
+assert_eq!(x.iter_mut().next(), None);
 ```

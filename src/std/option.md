@@ -230,17 +230,91 @@ assert_eq!(x.as_deref_mut().map(|x| {
 那么就`panic`自定义的错误信息。
 
 签名如下：
+
 ```rust
 fn expect(self, msg: &str) -> T
 ```
 
 代码示例：
+
 ```rust
 let x = Some("value");
 assert_eq!(x.expect("fruits are healthy"), "value");
 
 let y: Option<&str> = None;
 x.expect("fruits are healthy"); // panics with `fruits are healthy`
+```
+
+#### unwrap
+
+`unwrap`方法和`expect`方法一样，都是取出`Option`中的内部值。如果`Option`是`Some`，那么返回内部值；如果`Option`是`None`,那么就`panic`默认的错误信息。
+
+签名如下：
+
+```rust
+fn unwrap(self) -> T
+```
+
+代码示例：
+
+```rust
+let x = Some("air");
+assert_eq!(x.unwrap(), "air");
+
+let x: Option<&str> = None;
+assert_eq!(x.unwrap(), "air"); // fails
+```
+
+#### unwrap_or
+
+`unwrap_or`方法也是从`Option`取出内部值，但是`unwrap_or`方法可以提供一个默认值，当`Option`是`None`的时候，取出的内部值会是提供的默认值。
+
+签名如下：
+```rust
+fn unwrap_or(self, default: T) -> T
+```
+
+示例代码：
+```rust
+assert_eq!(Some("car").unwrap_or("bike"), "car");
+assert_eq!(None.unwrap_or("bike"), "bike");
+```
+
+#### unwrap_or_else
+
+`unwrap_or_else`方法同样是从`Option`中取出内部值，但是`unwrap_or_else`方法提供了一个返回默认值的函数作为参数，当`Option`是`None`时，会返回函数的返回值，而不是`panic`。
+
+签名如下：
+```rust
+fn unwrap_or_else(self, f:F) ->
+where
+  F: FnOnce() -> T
+```
+
+示例代码：
+```rust
+let k = 10;
+assert_eq!(Some(4).unwrap_or_else(|| 2*k), 4);
+assert_eq!(None.unwrap_or_else(|| 2*k), 20);
+```
+
+#### unwrap_or_default
+
+`unwrap_or_default`方法同样是从`Option`取出内部值。但是当`Option`是`None`，其返回值为内部值的默认值，如内部值的类型为`String`，返回`String::default()`，
+内部值的类型为`u8`，返回`0`。
+
+签名如下：
+```rust
+fn unwrap_or_default(self) -> T
+```
+
+示例代码：
+```rust
+let x: Option<u32> = None;
+let y: Option<u32> = Some(12);
+
+assert_eq!(x.unwrap_or_default(), 0);
+assert_eq!(y.unwrap_or_default(), 12);
 ```
 
 ### 和**Result**之间的转换
@@ -404,10 +478,11 @@ assert_eq!(x.zip(z), None);
 
 #### unzip
 
-`unzip`是`zip`的逆操作，就是把形式如`Option<(T,U)>`的二元元组Option拆分为`(Option<T>,Option<U>)`的二元元组。
+`unzip`是`zip`的逆操作，就是把形式如`Option<(T,U)>`的二元元组 Option 拆分为`(Option<T>,Option<U>)`的二元元组。
 如果`Option`的值为`Some((T,U))`，则返回`(Some(T),Some(U))`，否则返回`(None, None)`.
 
 签名如下：
+
 ```rust
 fn unzip(self) -> (Option<T>,Option<U>)
 ```

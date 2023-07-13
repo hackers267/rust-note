@@ -25,6 +25,31 @@
 - ptr::NonNull\<U>
 - #\[repr(transparent)\] struct around one of the types in this list
 
+## Option和`?`操作符
+
+和`Result`一样，`Option`也可以通过`?`操作符来精简代码。示例如下：
+
+原代码：
+
+```rust
+fn add_last_numbers(stack: &mut Vec<i32>) -> Option<i32> {
+ let a = stack.pop();
+ let b = stack.pop();
+
+ match(a,b) {
+    (Some(x), Some(y)) => Some(x+y),
+    _ => None,
+ }
+}
+```
+
+精简代码：
+```rust
+fn add_last_numbers(stack: &mut Vec<i32>) -> Option<i32> {
+  Some(stack.pop()? + stack.pop()?)
+}
+```
+
 ## 方法概览
 
 ### 判断

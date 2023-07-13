@@ -108,14 +108,14 @@ assert_eq!(x.is_some_and(more_than_one), false);
 
 ### 转换
 
-- as\*ref 把 \*&Option<T>\_ 转换为 \_Option\<&T>\_
-- as*mut 把 *&mut Option<T>\_ 转换为*Option\<&mut T>*
-- as*deref 把 *&Option<T>\_ 转换为*Option\<&T::Target>*
-- as*deref_mut 把 *&mut Option<T>\_ 转换为*Option\<&mut T::Target>*
-- as*pin_ref 把 \_Pin\<&Option<T>>* 转换为*Option\<Pin\<&T>>*
-- as*pin_mut 把 \_Pin\<&mut Option<T>>* 转换为*Option\<Pin\<&mut T>>*
-- cloned 通过**clone**方法把 _Option\<&T>_ 或 _Option\<&mut T>_ 转换为*Option<T>*
-- copied 通过**copy**方法把 _Option\<&T>_ 或 _Option\<&mut T>_ 转换为*Option<T>*
+- as_ref 把 *&Option<T>* 转换为 *Option<&T>*
+- as_mut 把 *&mut Option<T>* 转换为*Option<&mut T>*
+- as_deref 把 *&Option<T>* 转换为*Option<&T::Target>*
+- as_deref_mut 把 *&mut Option<T>* 转换为*Option<&mut T::Target>*
+- as_pin_ref 把 *Pin<&Option<T>>* 转换为*Option<Pin<&T>>*
+- as_pin_mut 把 *Pin<&mut Option<T>>* 转换为*Option<Pin<&mut T>>*
+- cloned 通过**clone**方法把 *Option<&T>* 或 *Option<&mut T>* 转换为*Option<T>*
+- copied 通过**copy**方法把 *Option<&T>* 或 *Option<&mut T>* 转换为*Option<T>*
 
 #### as_ref
 
@@ -224,6 +224,25 @@ assert_eq!(x.as_deref_mut().map(|x| {
 - unwrap_or_default 提取`Option`中的值，如果是`None`，则返回类型的*默认值*
 - unwrap_or_else 提取`Option`中的值，如果是`None`，则返回提供的函数执行后的返回值
 
+#### expect
+
+`expect`方法是把`Option`对内部值的包装除去，也就是说取出内部值。如果`Option`是一个`Some`，那么返回内部值；如果`Option`是`None`，
+那么就`panic`自定义的错误信息。
+
+签名如下：
+```rust
+fn expect(self, msg: &str) -> T
+```
+
+代码示例：
+```rust
+let x = Some("value");
+assert_eq!(x.expect("fruits are healthy"), "value");
+
+let y: Option<&str> = None;
+x.expect("fruits are healthy"); // panics with `fruits are healthy`
+```
+
 ### 和**Result**之间的转换
 
 - ok_or 如果`Option`是`Some(v)`则转换为`Ok(v)`，如果`Option`是`None`，则使用提供的默认`err`值转换为`Err(err)`
@@ -239,6 +258,7 @@ assert_eq!(x.as_deref_mut().map(|x| {
 - map_or_else
 - zip
 - zip_with
+- unzip
 
 #### filter
 
@@ -380,6 +400,26 @@ let z = None: < u8>;
 
 assert_eq!(x.zip(y), Some((1, "foo")));
 assert_eq!(x.zip(z), None);
+```
+
+#### unzip
+
+`unzip`是`zip`的逆操作，就是把形式如`Option<(T,U)>`的二元元组Option拆分为`(Option<T>,Option<U>)`的二元元组。
+如果`Option`的值为`Some((T,U))`，则返回`(Some(T),Some(U))`，否则返回`(None, None)`.
+
+签名如下：
+```rust
+fn unzip(self) -> (Option<T>,Option<U>)
+```
+
+代码示例：
+
+```rust
+let x = Some((1,"hi"));
+let y = None::<(u8,u32)>;
+
+assert_eq!(x.unzip(), (Some(1), Some("hi")));
+assert_eq!(y.unzip(), (None, None));
 ```
 
 ### 布尔操作

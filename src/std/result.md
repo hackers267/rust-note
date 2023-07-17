@@ -51,7 +51,7 @@ fn write_info(info: &Info) -> io::Result<()> {
 
 签名如下：
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub const fn is_ok(&self) -> bool
 }
@@ -59,7 +59,7 @@ impl<T, E> Result<T, E> {
 
 示例代码：
 
-```Rust
+```rust
 let x: Result<i32, &str> = Ok(-32);
 assert_eq!(x.is_ok(), true);
 
@@ -73,7 +73,7 @@ assert_eq!(x.is_ok(), false);
 
 签名如下：
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub const fn is_err(&self) -> bool
 }
@@ -81,7 +81,7 @@ impl<T, E> Result<T, E> {
 
 代码示例：
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 assert_eq!(x.is_err(), false);
 
@@ -95,7 +95,7 @@ assert_eq!(x.is_err(), true);
 
 签名如下：
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub const fn is_ok_and<F>(&self, f: F) -> bool
    where F: impl FnOnce(T) -> bool
@@ -104,7 +104,7 @@ impl<T, E> Result<T, E> {
 
 示例代码：
 
-```Rust
+```rust
 let x:Result<i32, &str> = Ok(2);
 assert_eq!(x.is_ok_and(|x| x > 0), true);
 
@@ -125,7 +125,7 @@ assert_eq!(x.is_ok_and(|x| x > 0), false);
 
 签名如下：
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub const fn is_err_and<F>(&self, f: F) -> bool
    where F: impl FnOnce(E) -> bool
@@ -134,7 +134,7 @@ impl<T, E> Result<T, E> {
 
 示例代码：
 
-```Rust
+```rust
 use std::io::{Error, ErrorKind};
 
 let x: Result<u32, Error> = Err(Error::new(ErrorKind::NotFound, "!"));
@@ -160,7 +160,7 @@ assert_eq!(x.is_err_and(|x| x.kind() == ErrorKind::NotFound), false);
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn as_ref(&self) -> Result<&T, &E>
 }
@@ -168,7 +168,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 assert_eq!(x.as_ref(), Ok(&2));
 
@@ -182,7 +182,7 @@ assert_eq!(x.as_ref(), Err(&"Some error message"));
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn as_mut(&mut self) -> Result<&mut T, &mut E>
 }
@@ -190,7 +190,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 fn mutate(r: &mut Result<i32, i32>) {
     match r.as_mut() {
         Ok(v) => *v = 42,
@@ -213,7 +213,7 @@ assert_eq!(x.unwrap(), 0);
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn as_deref(&self) -> Result<&<T as Deref>::Target, &E>
   where
@@ -223,7 +223,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<String, u32> = Ok("hello".to_string());
 let y: Result<&str, &u32> = Ok("hello");
 assert_eq!(x.as_deref(), y);f
@@ -239,7 +239,7 @@ assert_eq!(x.as_deref(), y);
 
 签名如下：
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn as_deref_mut(&mut self) -> Result<&mut <T as DerefMut>::Target, &mut E>
   where
@@ -249,7 +249,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let mut s = "HELLO".to_string();
 let mut x: Result<String, u32> = Ok("hello".to_string());
 let y: Result<&mut str, &mut u32> = Ok(&mut s);
@@ -282,7 +282,7 @@ assert_eq!(x.as_deref_mut().map(|x| { x.make_ascii_uppercase(); x }), y);
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn expect(self, msg: &str) -> T
   where
@@ -292,7 +292,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 assert_eq!(x.expect("Error"), 2);
 
@@ -309,7 +309,7 @@ x.expect("Error"); // panic
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn unwrap(self) -> T
   where 
@@ -319,7 +319,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 assert_eq!(x.unwrap(), 2);
 
@@ -336,7 +336,7 @@ x.unwrap(); // panic
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn unwrap_or(self, default: T) -> T
 }
@@ -344,7 +344,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 assert_eq!(x.unwrap_or(0), 2);
 
@@ -361,7 +361,7 @@ assert_eq!(x.unwrap_or(0), 0);
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn unwrap_or_default(self) -> T
 }
@@ -369,7 +369,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 assert_eq!(x.unwrap_or_default(), 2);
 
@@ -386,7 +386,7 @@ assert_eq!(x.unwrap_or_default(), 0);
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn unwrap_or_else(self, f: impl FnOnce() -> T) -> T
 }
@@ -394,7 +394,7 @@ impl<T, E> Result<T, E> {
 
 代码示例：
 
-```Rust
+```rust
 fn count(x: &str) -> uszie { x.len() }
 
 assert_eq!(Ok(2).unwrap_or_else(count), 2);
@@ -410,7 +410,7 @@ assert_eq!(Err("foo").unwrap_or_else(count), 3);
 
 签名如下：
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
     pub fn expect_err(self, msg: &str) -> E
     where T: Debug
@@ -419,7 +419,7 @@ impl<T, E> Result<T, E> {
 
 代码示例：
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(10);
 x.expect_err("Testing expect_err"); // panic
 ```
@@ -433,7 +433,7 @@ x.expect_err("Testing expect_err"); // panic
 
 签名如下：
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
     pub fn unwrap_err(self) -> E
     where
@@ -443,7 +443,7 @@ impl<T, E> Result<T, E> {
 
 代码示例：
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(10);
 x.unwrap_err(); // panic
 
@@ -482,7 +482,7 @@ assert_eq!(x.unwrap_err(), "failure");
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn err(self) -> Option<E>
 }
@@ -490,7 +490,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 assert_eq!(x.err(), None);
 
@@ -507,7 +507,7 @@ assert_eq!(x.err(), Some("Nothing here"));
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn ok(self) -> Option<T>
 }
@@ -515,7 +515,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 assert_eq!(x.ok(), Some(2));
 
@@ -533,7 +533,7 @@ assert_eq!(x.ok(), None);
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<Option<T>, E> {
   pub fn transpose(self) -> Option<Result<T, E>>
 }
@@ -541,7 +541,7 @@ impl<T, E> Result<Option<T>, E> {
 
 代码示例:
 
-```Rust
+```rust
 #[derive(Debug, Eq, PartialEq)]
 struct SomeErr;
 
@@ -559,7 +559,7 @@ assert_eq!(x.transpose(), y);
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn map<U, F>(self, op: F) -> Result<U, E>
   where
@@ -569,7 +569,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let line = "1\n2\n3\n4\n";
 
 for num in line.linnes() {
@@ -589,7 +589,7 @@ for num in line.linnes() {
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> for Result<T, E> {
   pub fn map_err<F, O>(self, op: F) -> Result<T, O>
     where F: FnOnce(E) -> O
@@ -598,7 +598,7 @@ impl<T, E> for Result<T, E> {
 
 代码示例：
 
-```Rust
+```rust
 fn stringify(x: u32) -> String { format!("error code: {x}")}
 
 let x: Result<u32, u32> = Ok(2);
@@ -617,7 +617,7 @@ assert_eq!(x.map_err(stringify), Err("error code: 13".to_string()));
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
  pub fn map_or<U, F>(self, default: U, op: F) -> U
    where F: FnOnce(T) -> U
@@ -626,7 +626,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<_, &str> = Ok("foo");
 assert_eq!(x.map_or(42, |v| v.len()), 3);
 
@@ -643,7 +643,7 @@ assert_eq!(x.map_or(42, |v| v.len()), 42);
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn map_or_else<U, D, F>(self, default: D, op: F) -> U
     where
@@ -676,7 +676,7 @@ impl<T, E> Result<T, E> {
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
   pub fn and<U>(self, other: Result<U, E>) -> Result<U, E>
 }
@@ -684,7 +684,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 let y: Result<u32, &str> = Err("late error");
 assert_eq!(x.and(y), Err("late error"));
@@ -711,7 +711,7 @@ assert_eq!(x.and(y), Ok("foo"));
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
     pub fn or<F>(self, other: Result<T, F>) -> Result<T, F>
 }
@@ -719,7 +719,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 let x: Result<u32, &str> = Ok(2);
 let y: Result<u32, &str> = Err("late error");
 assert_eq!(x.or(y), Ok(2));
@@ -757,7 +757,7 @@ assert_eq!(x.or(y), Ok(2));
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
     pub fn and_then(U, F)(self, op: F) -> Result<U, E>
     where 
@@ -767,7 +767,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 fn sq_then_to_string(x: u32) -> Result<String, &'static str> {
  x.checked_mul(x).map(|sq| sq.to_string()).ok_or("overflowed")
 }
@@ -786,7 +786,7 @@ assert_eq!(Err("not a number").and_then(sq_then_to_string), Err("not a number"))
 
 签名如下:
 
-```Rust
+```rust
 impl<T, E> Result<T, E> {
     pub fn or_else<F, O>(self, op: O) -> Result<T, F>
     where
@@ -796,7 +796,7 @@ impl<T, E> Result<T, E> {
 
 代码示例:
 
-```Rust
+```rust
 fn sq(x: u32) -> Result<u32, u32> { Ok(x * x) }
 fn err(x: u32) -> Result<u32, u32> { Err(x) }
 
@@ -839,7 +839,7 @@ assert_eq!(res, Ok(vec![2, 4, 8]));
 
 代码示例：
 
-```Rust
+```rust
 let v = [Err("error!"), Ok(1), Ok(2), Ok(3), Err("foo")];
 let res: Result<i32, &str> = v.into_iter().sum();
 assert_eq!(res, Err("error!"));

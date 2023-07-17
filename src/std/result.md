@@ -743,10 +743,68 @@ assert_eq!(x.or(y), Ok(2));
 |--------|------|--------------|---------------|-------|
 |and_then|Err(e)|(not provided)|(not provided) | Err(e)|
 |and_then|Ok(x) | x            | Err(d)        | Err(d)|
-|and_them|Ok(x) | x            | Ok(y)         | Ok(y) |
+|and_then|Ok(x) | x            | Ok(y)         | Ok(y) |
 |or_else |Err(e)| e            | Err(d)        | Err(d)|
 |or_else |Err(e)| e            | Ok(y)         | Ok(y) |
 |or_else |Ok(x) |(not provided)|(not evaluated)| Ok(x) |
+
+#### and_then
+
+`and_then`用于操作和另一个`Result`的关系处理，其处理和布尔值操作中的`&&`是类似的:
+
+- `Ok`变体 -> 调用函数
+- `Err`变体 -> 返回自身
+
+签名如下:
+
+```Rust
+impl<T, E> Result<T, E> {
+    pub fn and_then(U, F)(self, op: F) -> Result<U, E>
+    where 
+      F: FnOnce(T) -> Result<U, E>
+}
+```
+
+代码示例:
+
+```Rust
+fn sq_then_to_string(x: u32) -> Result<String, &'static str> {
+ x.checked_mul(x).map(|sq| sq.to_string()).ok_or("overflowed")
+}
+
+assert_eq!(Ok(2).and_then(sq_then_to_string), Ok("4".to_string()));
+assert_eq!(Ok(1_000_000).and_then(sq_then_to_string), Err("overflowed"));
+assert_eq!(Err("not a number").and_then(sq_then_to_string), Err("not a number"));
+```
+
+#### or_else
+
+`or_else`用于操作或者另一个`Result`的关系处理，其处理或者布尔值操作中的`||`是类似的:
+
+- `Ok`变体 -> 直接返回`Ok`内容
+- `Err`变体 -> 调用函数，返回函数内容
+
+签名如下:
+
+```Rust
+impl<T, E> Result<T, E> {
+    pub fn or_else<F, O>(self, op: O) -> Result<T, F>
+    where
+      O: FnOnce(E) -> Result<T, F>
+}
+```
+
+代码示例:
+
+```Rust
+fn sq(x: u32) -> Result<u32, u32> { Ok(x * x) }
+fn err(x: u32) -> Result<u32, u32> { Err(x) }
+
+assert_eq!(Ok(2).or_else(sq).or_else(err), Ok(2));
+assert_eq!(Ok(2).or_else(err).or_else(sq), Ok(2));
+assert_eq!(Err(3).or_else(sq).or_else(err), Ok(9));
+assert_eq!(Err(3).or_else(err).or_else(err), Err(3));
+```
 
 ### 比较操作符
 

@@ -667,6 +667,76 @@ impl<T, E> Result<T, E> {
 |or  | Err(e)|Ok(y)    | Ok(y) |
 |or  | Ok(x) |(ignored)| Ok(x) |
 
+#### and
+
+`and`用于操作和另一个`Result`的关系处理，其处理和布尔值操作中的`&&`是类似的:
+
+- `Ok`变体 -> 返回操作数的内容
+- `Err`变体 -> 不处理操作数，直接返回自身结果
+
+签名如下:
+
+```Rust
+impl<T, E> Result<T, E> {
+  pub fn and<U>(self, other: Result<U, E>) -> Result<U, E>
+}
+```
+
+代码示例:
+
+```Rust
+let x: Result<u32, &str> = Ok(2);
+let y: Result<u32, &str> = Err("late error");
+assert_eq!(x.and(y), Err("late error"));
+
+let x: Result<u32, &str> = Err("early error");
+let y: Result<&str, &str> = Ok("foo");
+assert_eq!(x.and(y), Err("early error"));
+
+let x: Result<u32, &str> = Err("not a 2");
+let y: Result<&str, &str> = Err("late error");
+assert_eq!(x.and(y), Err("not a 2"));
+
+let x: Result<u32, &str> = Ok(2);
+let y: Result<&str, &str> = Ok("foo");
+assert_eq!(x.and(y), Ok("foo"));
+```
+
+#### or
+
+`or`用于操作或者另一个`Result`的关系处理，其处理或者布尔值操作中的`||`是类似的:
+
+- `Ok`变体 -> 直接返回自身内容
+- `Err`变体 -> 返回操作数的内容
+
+签名如下:
+
+```Rust
+impl<T, E> Result<T, E> {
+    pub fn or<F>(self, other: Result<T, F>) -> Result<T, F>
+}
+```
+
+代码示例:
+
+```Rust
+let x: Result<u32, &str> = Ok(2);
+let y: Result<u32, &str> = Err("late error");
+assert_eq!(x.or(y), Ok(2));
+
+let x: Result<u32, &str> = Err("early error");
+let y: Result<u32, &str> = Ok(2);
+assert_eq!(x.or(y), Ok(2));
+
+let x: Result<u32, &str> = Err("not a 2");
+let y: Result<u32, &str> = Err("late error");
+assert_eq!(x.or(y), Err("late error"));
+
+let x: Result<u32, &str> = Ok(2);
+let y: Result<u32, &str> = Ok("foo");
+assert_eq!(x.or(y), Ok(2));
+```
+
 接收函数返回值作为参数：
 
 |方法    | self | 输入         | 输出          | 结果  |

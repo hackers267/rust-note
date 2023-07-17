@@ -12,6 +12,7 @@
   - [format!](./std/format.md)
   - [vec](./std/vec.md)
   - [Option](./std/option.md)
+  - [Result](./std/result.md) 
 
 - [函数](./fn/ReadMe.md)
 

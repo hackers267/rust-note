@@ -25,6 +25,7 @@
 # Cargo
 
 - [Cargo](./cargo/ReadMe.md)
+  - [镜像](./cargo/mirrors.md)
 
 ---
 

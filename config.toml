@@ -36,6 +36,8 @@ title = "Rust"
 items = [
   { lang = "zh", links = [
    { url = "/", name = "首页" },
+   { url = "/std", name = "标准库" } ,
+   { url = "/third", name = "第三方库" },
    { url = "/post", name = "文章" },
    { url = "/tags", name = "标签" },
   ] },

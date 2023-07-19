@@ -1,0 +1,4 @@
+[submodule "themes/blow"]
+	path = themes/blow
+	url = git@github.com:hackers267/blow.git
+	branch = main

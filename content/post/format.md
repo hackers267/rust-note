@@ -1,3 +1,12 @@
++++
+title = "format宏"
+date = 2023-07-19
+[taxonomies]
+tags = ["std", "marco"]
+[extra]
+toc = true
++++
+
 # format!
 
 `format!`宏是rust中格式化字符串最常使用的一个方法。通过`format!`宏不仅可以拼接字符串，而且可以转换字符串，格式化字符串。

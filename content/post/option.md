@@ -1,3 +1,13 @@
++++
+title = "Option"
+date = 2023-07-17
+[taxonomies]
+tags = ["std"]
+[extra]
+toc = true
++++
+
+
 # Option
 
 `Option`是 Rust 标准库里最常用的枚举体之一。Rust 利用`Option`消除了*Java*等语言中臭名昭著的空指针异常的问题。`Option`

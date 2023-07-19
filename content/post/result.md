@@ -1,3 +1,12 @@
++++
+title = "Result"
+date = 2023-07-17
+[taxonomies]
+tags = ["std"]
+[extra]
+toc = true
++++
+
 # Result
 
 `Result`是Rust中处理错误最最常用的一个类型。其和[Option](./option.md)一样，也是一个枚举体，只是[Option](./option.md)是由`Some(T)`和`None`结成，

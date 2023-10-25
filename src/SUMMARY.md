@@ -36,6 +36,7 @@
 - [crates](./crates/ReadMe.md)
 - [dotenvy](./dotenvy/ReadMe.md)
 - [serde](./serde/ReadMe.md)
+  - [enum](./serde/enum.md)
 - [rayon](./rayon/ReadMe.md)
 - [itertools](./itertools/ReadMe.md)
 - [chrono](./chrono/ReadMe.md)

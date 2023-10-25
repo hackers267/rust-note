@@ -37,6 +37,7 @@
 - [dotenvy](./dotenvy/ReadMe.md)
 - [serde](./serde/ReadMe.md)
   - [enum](./serde/enum.md)
+  - [rename](./serde/rename.md)
 - [rayon](./rayon/ReadMe.md)
 - [itertools](./itertools/ReadMe.md)
 - [chrono](./chrono/ReadMe.md)

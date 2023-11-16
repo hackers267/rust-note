@@ -40,6 +40,7 @@
 - [serde](./serde/ReadMe.md)
   - [enum](./serde/enum.md)
   - [rename](./serde/rename.md)
+  - [primitiveDateTime](./serde/primitiveDateTime.md)
 - [rayon](./rayon/ReadMe.md)
 - [itertools](./itertools/ReadMe.md)
 - [chrono](./chrono/ReadMe.md)

@@ -28,6 +28,10 @@
 
 - [Cargo](./cargo/ReadMe.md)
   - [镜像](./cargo/mirrors.md)
+  - [命令](./cargo/command/ReadMe.md)
+    - [运行](./cargo/command/run.md)
+    - [测试](./cargo/command/test.md)
+    - [构建](./cargo/command/build.md)
 
 ---
 

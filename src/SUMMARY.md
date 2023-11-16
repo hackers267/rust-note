@@ -6,6 +6,7 @@
 
   - [变量](./common/base.md)
   - [字符串](./common/str.md)
+  - [生命周期](./common/lifecycle.md)
 
 - [标准库](./std/ReadMe.md)
 
@@ -13,6 +14,7 @@
   - [vec](./std/vec.md)
   - [Option](./std/option.md)
   - [Result](./std/result.md) 
+  - [迭代器](./std/iter.md)
 
 - [函数](./fn/ReadMe.md)
 

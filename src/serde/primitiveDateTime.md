@@ -1,13 +1,3 @@
-+++
-title = "time库的PrimitiveDateTime结构体"
-date = 2023-07-19
-[taxonomies]
-tags = ["time"]
-[extra]
-toc = true
-+++
-
-
 # PrimitiveDateTime
 
 `PrimitiveDateTime`是一个可以同时表示时间和时间的结构体。比如可以表示*2008 年 8 月 8 日 20 时 08 分 08 秒*这样的时间。

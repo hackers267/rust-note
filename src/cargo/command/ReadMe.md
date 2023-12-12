@@ -5,3 +5,4 @@
 - [运行](./run.md)
 - [测试](./test.md)
 - [构建](./build.md)
+- [watch](./watch.md)
